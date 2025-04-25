@@ -1,0 +1,305 @@
+/* styles/globals.css */
+
+/* Import Google Fonts - Poppins with appropriate weights */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+:root {
+  /* UCAB Brand Colors */
+  --ucab-yellow: #FFCB05;
+  --ucab-blue: #30B4E9;
+  --ucab-green: #00843D;
+  --ucab-light-blue: #C8E9F9;
+  --ucab-gray: #F5F5F5;
+  --ucab-dark: #333333;
+  --white: #FFFFFF;
+}
+
+/* Reset and base styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #ffffff;
+  color: #333333;
+  line-height: 1.6;
+}
+
+/* Container and layout */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500; /* Medium weight instead of bold */
+  color: #333333;
+  margin-bottom: 1rem;
+}
+
+h1 {
+  font-size: 1.8rem;
+  text-align: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  color: #333333;
+}
+
+h2 {
+  font-size: 1.4rem;
+  color: #333333;
+}
+
+/* UCAB Header styles */
+.ucab-header {
+  background-color: var(--ucab-light-blue);
+  padding: 1rem 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.ucab-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.ucab-logo {
+  display: flex;
+  align-items: center;
+}
+
+.ucab-logo img {
+  height: 50px;
+  margin-right: 10px;
+}
+
+.ucab-logo-text {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 1.2rem;
+  color: #333333;
+}
+
+.ucab-nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.ucab-nav a {
+  color: #333333;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding: 0.5rem;
+  transition: color 0.2s;
+}
+
+.ucab-nav a:hover {
+  color: var(--ucab-blue);
+}
+
+/* Page title area */
+.page-title {
+  background-color: var(--white);
+  padding: 2rem 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.page-title h1 {
+  margin: 0;
+  font-weight: 500;
+  color: #333333;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Card styles */
+.card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid #e2e8f0;
+}
+
+/* Form elements */
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333333;
+  font-size: 0.9rem;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  background-color: #f8fafc;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--ucab-blue);
+  box-shadow: 0 0 0 3px rgba(48, 180, 233, 0.15);
+}
+
+/* Button styles */
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+  border: none;
+}
+
+.btn-primary {
+  background-color: var(--ucab-blue);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #2798c7;
+}
+
+.btn-secondary {
+  background-color: #e2e8f0;
+  color: #333333;
+}
+
+.btn-secondary:hover {
+  background-color: #cbd5e1;
+}
+
+.btn-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+/* Availability table */
+.availability-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.availability-table th,
+.availability-table td {
+  padding: 0.75rem;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+}
+
+.availability-table th {
+  background-color: #f1f5f9;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.available {
+  background-color: rgba(0, 132, 61, 0.1);
+  color: var(--ucab-green);
+}
+
+.occupied {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+/* Time selector special styles */
+.time-selection {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.time-option {
+  padding: 0.75rem;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.85rem;
+}
+
+.time-option:hover {
+  border-color: var(--ucab-blue);
+  background-color: rgba(48, 180, 233, 0.05);
+}
+
+.time-option.selected {
+  border-color: var(--ucab-blue);
+  background-color: rgba(48, 180, 233, 0.1);
+  font-weight: 500;
+}
+
+/* Duration selector */
+.duration-selection {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.duration-option {
+  flex: 1;
+  padding: 0.75rem;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.85rem;
+}
+
+.duration-option:hover {
+  border-color: var(--ucab-blue);
+  background-color: rgba(48, 180, 233, 0.05);
+}
+
+.duration-option.selected {
+  border-color: var(--ucab-blue);
+  background-color: rgba(48, 180, 233, 0.1);
+  font-weight: 500;
+}
+
+/* Success icon */
+.success-icon {
+  background-color: rgba(0, 132, 61, 0.1);
+  color: var(--ucab-green);
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem auto;
+}
+
+.success-icon svg {
+  width: 35px;
+  height: 35px;
+}
