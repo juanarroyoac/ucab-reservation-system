@@ -2,6 +2,7 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
+import UcabHeader from '../components/UcabHeader';
 
 // Generate time slots from 9am to 5pm
 const generateTimeSlots = () => {
@@ -52,7 +53,7 @@ export default function SelectTime() {
     if (availableDates.length > 0) {
       setSelectedDate(availableDates[0].dateStr);
     }
-  }, []);
+  }, [availableDates]);
 
   // Update available time slots based on selected duration
   useEffect(() => {
@@ -71,7 +72,7 @@ export default function SelectTime() {
         setSelectedTime("");
       }
     }
-  }, [selectedDuration]);
+  }, [selectedDuration, selectedTime]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -93,13 +94,9 @@ export default function SelectTime() {
         <title>Seleccionar Horario | Reserva de Cubículos</title>
       </Head>
 
-      <header className="header">
-        <div className="container">
-          <h1>¿CUÁNDO NECESITAS UN CUBÍCULO?</h1>
-        </div>
-      </header>
+      <UcabHeader />
 
-      <main className="container">
+      <main className="container" style={{ paddingTop: "2rem", paddingBottom: "2rem" }}>
         <div className="card" style={{ maxWidth: "800px", margin: "0 auto" }}>
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: "2rem" }}>

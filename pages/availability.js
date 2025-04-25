@@ -2,6 +2,7 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
+import UcabHeader from '../components/UcabHeader';
 
 // Generate time slots from 9am to 5pm
 const generateTimeSlots = () => {
@@ -24,6 +25,7 @@ const cubicles = [
 export default function Availability() {
   const router = useRouter();
   const [reservations, setReservations] = useState([]);
+  // Using the selectedDate in the UI to display current date
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   
   // Load reservations from localStorage on component mount
@@ -41,30 +43,30 @@ export default function Availability() {
     );
   };
 
+  // Format the selected date for display
+  const formattedDate = () => {
+    const date = new Date(selectedDate);
+    return date.toLocaleDateString('es-ES', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
   return (
     <div>
       <Head>
         <title>Disponibilidad | Reserva de Cubículos</title>
       </Head>
 
-      <header className="header">
-        <div className="container">
-          <h1>DISPONIBILIDAD DE CUBÍCULOS</h1>
-          <p style={{ textAlign: "center" }}>
-            Fecha: {new Date().toLocaleDateString('es-ES', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            })}
-          </p>
-        </div>
-      </header>
+      <UcabHeader />
 
-      <main className="container">
+      <main className="container" style={{ paddingTop: "2rem", paddingBottom: "2rem" }}>
         <div className="card">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
             <h2>Horarios Disponibles</h2>
+            <p>Fecha actual: {formattedDate()}</p>
             <div>
               <span className="available" style={{ padding: "0.5rem", borderRadius: "4px", marginRight: "1rem" }}>Disponible</span>
               <span className="occupied" style={{ padding: "0.5rem", borderRadius: "4px" }}>Ocupado</span>

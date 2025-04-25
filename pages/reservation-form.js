@@ -2,15 +2,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import UcabHeader from '../components/UcabHeader';
 
 // Data for the form
-const cubicles = [
-  { id: 1, name: "Cubículo 1" },
-  { id: 2, name: "Cubículo 2" },
-  { id: 3, name: "Cubículo 3" },
-  { id: 4, name: "Cubículo 4" },
-];
-
 const standardMotives = [
   "Estudio Individual",
   "Proyecto en Grupo",
@@ -136,19 +130,16 @@ export default function ReservationForm() {
         <title>Formulario de Reserva | Reserva de Cubículos</title>
       </Head>
 
-      <header className="header">
-        <div className="container">
-          <h1>FORMULARIO DE RESERVA</h1>
+      <UcabHeader />
+
+      <main className="container" style={{ paddingTop: "2rem", paddingBottom: "2rem" }}>
+        <div className="card" style={{ maxWidth: "800px", margin: "0 auto" }}>
           {selectedDate && selectedTime && (
-            <p style={{ textAlign: "center" }}>
+            <p style={{ textAlign: "center", marginBottom: "1.5rem" }}>
               {formatDate(selectedDate)} • {selectedTime} • {selectedDuration} {selectedDuration === 1 ? 'hora' : 'horas'}
             </p>
           )}
-        </div>
-      </header>
-
-      <main className="container">
-        <div className="card" style={{ maxWidth: "800px", margin: "0 auto" }}>
+          
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: "1.5rem" }}>
               <label htmlFor="userType">Tipo de Solicitante *</label>

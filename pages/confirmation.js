@@ -1,14 +1,14 @@
 // File: /pages/confirmation.js
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Head from 'next/head';
 import UcabHeader from '../components/UcabHeader';
 import emailjs from '@emailjs/browser';
 
 // EmailJS configuration
 const EMAILJS_SERVICE_ID = 'service_0nwlu2d';
-const EMAILJS_TEMPLATE_ID = 'template_4q4sz3o'; // Replace with your actual template ID
-const EMAILJS_PUBLIC_KEY = 'xXSxh9PKOaltlrGeo'; // Replace with your actual public key
+const EMAILJS_TEMPLATE_ID = 'template_reservation'; // Replace with your actual template ID
+const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY'; // Replace with your actual public key
 
 export default function Confirmation() {
   const router = useRouter();
@@ -28,45 +28,8 @@ export default function Confirmation() {
   const [emailSent, setEmailSent] = useState(false);
   const [emailError, setEmailError] = useState(null);
 
-  useEffect(() => {
-    // Redirect if terms not agreed to
-    const agreedToTerms = localStorage.getItem('agreedToTerms');
-    if (agreedToTerms !== 'true') {
-      router.push('/terms');
-      return;
-    }
-    
-    // Get the reservation details
-    const storedTime = localStorage.getItem('selectedTime');
-    const storedDuration = localStorage.getItem('selectedDuration');
-    const storedDate = localStorage.getItem('selectedDate');
-    const userFormData = localStorage.getItem('userFormData');
-    
-    if (storedTime && storedDuration && storedDate && userFormData) {
-      const userData = JSON.parse(userFormData);
-      const details = {
-        time: storedTime,
-        duration: storedDuration,
-        date: storedDate,
-        cubicle: `Cubículo ${userData.cubicleId}`,
-        name: userData.name,
-        email: userData.email,
-        userType: userData.userType,
-        id: userData.id,
-        phone: userData.phone,
-        school: userData.school,
-        motive: userData.motive
-      };
-      
-      setReservationDetails(details);
-      
-      // Send confirmation email
-      sendConfirmationEmail(details);
-    }
-  }, [router]);
-
-  // Function to send confirmation email
-  const sendConfirmationEmail = async (details) => {
+  // Define sendConfirmationEmail as a useCallback
+  const sendConfirmationEmail = useCallback(async (details) => {
     try {
       // Format date for email
       const formattedDate = formatDate(details.date);
@@ -101,7 +64,46 @@ export default function Confirmation() {
       console.error('Failed to send email:', error);
       setEmailError(error.text || 'Error al enviar el correo de confirmación');
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    // Redirect if terms not agreed to
+    const agreedToTerms = localStorage.getItem('agreedToTerms');
+    if (agreedToTerms !== 'true') {
+      router.push('/terms');
+      return;
+    }
+    
+    // Get the reservation details
+    const storedTime = localStorage.getItem('selectedTime');
+    const storedDuration = localStorage.getItem('selectedDuration');
+    const storedDate = localStorage.getItem('selectedDate');
+    const userFormData = localStorage.getItem('userFormData');
+    
+    if (storedTime && storedDuration && storedDate && userFormData) {
+      const userData = JSON.parse(userFormData);
+      const details = {
+        time: storedTime,
+        duration: storedDuration,
+        date: storedDate,
+        cubicle: `Cubículo ${userData.cubicleId}`,
+        name: userData.name,
+        email: userData.email,
+        userType: userData.userType,
+        id: userData.id,
+        phone: userData.phone,
+        school: userData.school,
+        motive: userData.motive
+      };
+      
+      setReservationDetails(details);
+      
+      // Send confirmation email
+      if (details.email) {
+        sendConfirmationEmail(details);
+      }
+    }
+  }, [router, sendConfirmationEmail]);
 
   // Format date for display
   const formatDate = (dateString) => {
