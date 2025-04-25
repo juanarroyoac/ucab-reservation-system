@@ -1,9 +1,10 @@
 // File: /pages/confirmation.js
 import { useRouter } from 'next/router';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import UcabHeader from '../components/UcabHeader';
-import emailjs from '@emailjs/browser';
+// Import emailjs only on client-side using dynamic import
+import dynamic from 'next/dynamic';
 
 // EmailJS configuration
 const EMAILJS_SERVICE_ID = 'service_0nwlu2d';
@@ -27,44 +28,6 @@ export default function Confirmation() {
   });
   const [emailSent, setEmailSent] = useState(false);
   const [emailError, setEmailError] = useState(null);
-
-  // Define sendConfirmationEmail as a useCallback
-  const sendConfirmationEmail = useCallback(async (details) => {
-    try {
-      // Format date for email
-      const formattedDate = formatDate(details.date);
-      
-      // Prepare template parameters
-      const templateParams = {
-        to_name: details.name,
-        from_name: 'Biblioteca UCAB',
-        to_email: details.email,
-        reservation_date: formattedDate,
-        reservation_time: details.time,
-        reservation_duration: `${details.duration} ${parseInt(details.duration) === 1 ? 'hora' : 'horas'}`,
-        cubicle: details.cubicle,
-        user_type: details.userType,
-        motive: details.motive,
-        user_id: details.id,
-        user_phone: details.phone,
-        user_school: details.school
-      };
-
-      // Send the email
-      const response = await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
-        templateParams,
-        EMAILJS_PUBLIC_KEY
-      );
-
-      console.log('Email sent successfully:', response);
-      setEmailSent(true);
-    } catch (error) {
-      console.error('Failed to send email:', error);
-      setEmailError(error.text || 'Error al enviar el correo de confirmación');
-    }
-  }, []);
 
   useEffect(() => {
     // Redirect if terms not agreed to
@@ -100,10 +63,52 @@ export default function Confirmation() {
       
       // Send confirmation email
       if (details.email) {
-        sendConfirmationEmail(details);
+        sendEmail(details);
       }
     }
-  }, [router, sendConfirmationEmail]);
+  }, [router]);
+
+  // Send email function (safer implementation)
+  const sendEmail = async (details) => {
+    try {
+      // Safely import emailjs only on client-side
+      const emailjs = await import('@emailjs/browser');
+      
+      // Format date for email
+      const formattedDate = formatDate(details.date);
+      
+      // Prepare template parameters
+      const templateParams = {
+        to_name: details.name,
+        from_name: 'Biblioteca UCAB',
+        to_email: details.email,
+        reservation_date: formattedDate,
+        reservation_time: details.time,
+        reservation_duration: `${details.duration} ${parseInt(details.duration) === 1 ? 'hora' : 'horas'}`,
+        cubicle: details.cubicle,
+        user_type: details.userType,
+        motive: details.motive,
+        user_id: details.id,
+        user_phone: details.phone,
+        user_school: details.school
+      };
+
+      // Initialize EmailJS (safer)
+      emailjs.init(EMAILJS_PUBLIC_KEY);
+
+      // Send the email
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        templateParams
+      );
+
+      setEmailSent(true);
+    } catch (error) {
+      console.error('Failed to send email:', error);
+      setEmailError('Error al enviar el correo de confirmación. Su reserva ha sido registrada exitosamente de todas formas.');
+    }
+  };
 
   // Format date for display
   const formatDate = (dateString) => {
