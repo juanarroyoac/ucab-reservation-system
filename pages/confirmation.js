@@ -8,8 +8,8 @@ import dynamic from 'next/dynamic';
 
 // EmailJS configuration
 const EMAILJS_SERVICE_ID = 'service_0nwlu2d';
-const EMAILJS_TEMPLATE_ID = 'template_reservation'; // Replace with your actual template ID
-const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY'; // Replace with your actual public key
+const EMAILJS_TEMPLATE_ID = 'template_4q4sz3o'; // Replace with your actual template ID
+const EMAILJS_PUBLIC_KEY = 'xXSxh9PKOaltlrGeo'; // Replace with your actual public key
 
 export default function Confirmation() {
   const router = useRouter();
