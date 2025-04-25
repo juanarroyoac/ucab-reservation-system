@@ -2,6 +2,13 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
+import UcabHeader from '../components/UcabHeader';
+import emailjs from '@emailjs/browser';
+
+// EmailJS configuration
+const EMAILJS_SERVICE_ID = 'service_0nwlu2d';
+const EMAILJS_TEMPLATE_ID = 'template_4q4sz3o'; // Replace with your actual template ID
+const EMAILJS_PUBLIC_KEY = 'xXSxh9PKOaltlrGeo'; // Replace with your actual public key
 
 export default function Confirmation() {
   const router = useRouter();
@@ -12,8 +19,14 @@ export default function Confirmation() {
     date: '',
     name: '',
     email: '',
-    userType: ''
+    userType: '',
+    id: '',
+    phone: '',
+    school: '',
+    motive: ''
   });
+  const [emailSent, setEmailSent] = useState(false);
+  const [emailError, setEmailError] = useState(null);
 
   useEffect(() => {
     // Redirect if terms not agreed to
@@ -31,17 +44,64 @@ export default function Confirmation() {
     
     if (storedTime && storedDuration && storedDate && userFormData) {
       const userData = JSON.parse(userFormData);
-      setReservationDetails({
+      const details = {
         time: storedTime,
         duration: storedDuration,
         date: storedDate,
         cubicle: `Cubículo ${userData.cubicleId}`,
         name: userData.name,
         email: userData.email,
-        userType: userData.userType
-      });
+        userType: userData.userType,
+        id: userData.id,
+        phone: userData.phone,
+        school: userData.school,
+        motive: userData.motive
+      };
+      
+      setReservationDetails(details);
+      
+      // Send confirmation email
+      sendConfirmationEmail(details);
     }
   }, [router]);
+
+  // Function to send confirmation email
+  const sendConfirmationEmail = async (details) => {
+    try {
+      // Format date for email
+      const formattedDate = formatDate(details.date);
+      
+      // Prepare template parameters
+      const templateParams = {
+        to_name: details.name,
+        from_name: 'Biblioteca UCAB',
+        to_email: details.email,
+        reservation_date: formattedDate,
+        reservation_time: details.time,
+        reservation_duration: `${details.duration} ${parseInt(details.duration) === 1 ? 'hora' : 'horas'}`,
+        cubicle: details.cubicle,
+        user_type: details.userType,
+        motive: details.motive,
+        user_id: details.id,
+        user_phone: details.phone,
+        user_school: details.school
+      };
+
+      // Send the email
+      const response = await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        templateParams,
+        EMAILJS_PUBLIC_KEY
+      );
+
+      console.log('Email sent successfully:', response);
+      setEmailSent(true);
+    } catch (error) {
+      console.error('Failed to send email:', error);
+      setEmailError(error.text || 'Error al enviar el correo de confirmación');
+    }
+  };
 
   // Format date for display
   const formatDate = (dateString) => {
@@ -59,16 +119,12 @@ export default function Confirmation() {
   return (
     <div>
       <Head>
-        <title>Reserva Confirmada | Reserva de Cubículos</title>
+        <title>Reserva Confirmada | Biblioteca UCAB</title>
       </Head>
 
-      <header className="header">
-        <div className="container">
-          <h1>RESERVA CONFIRMADA</h1>
-        </div>
-      </header>
+      <UcabHeader />
 
-      <main className="container">
+      <main className="container" style={{ paddingTop: "2rem", paddingBottom: "2rem" }}>
         <div className="card" style={{ maxWidth: "700px", margin: "0 auto", textAlign: "center" }}>
           <div className="success-icon">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -77,6 +133,18 @@ export default function Confirmation() {
           </div>
           
           <h2>¡Tu reserva ha sido registrada con éxito!</h2>
+          
+          {emailSent && (
+            <p style={{ color: "var(--ucab-green)", marginTop: "0.5rem", fontSize: "0.9rem" }}>
+              Se ha enviado un correo de confirmación a {reservationDetails.email}
+            </p>
+          )}
+          
+          {emailError && (
+            <p style={{ color: "#dc2626", marginTop: "0.5rem", fontSize: "0.9rem" }}>
+              {emailError}
+            </p>
+          )}
           
           <div style={{ 
             margin: "2rem 0", 
@@ -87,8 +155,8 @@ export default function Confirmation() {
             border: "1px solid #e2e8f0" 
           }}>
             <div style={{ marginBottom: "1.5rem", borderBottom: "1px solid #e2e8f0", paddingBottom: "1rem" }}>
-              <h3 style={{ color: "#1e40af", marginBottom: "0.5rem", fontSize: "1.25rem" }}>Detalles de la Reserva</h3>
-              <p style={{ fontSize: "1.1rem", marginBottom: "0.5rem" }}>
+              <h3 style={{ color: "var(--ucab-blue)", marginBottom: "0.5rem", fontSize: "1.25rem" }}>Detalles de la Reserva</h3>
+              <p style={{ fontSize: "1rem", marginBottom: "0.5rem" }}>
                 <strong>Solicitante:</strong> {reservationDetails.name} ({reservationDetails.userType})
               </p>
               <p style={{ fontSize: "0.875rem", color: "#64748b", marginBottom: "0.5rem" }}>
@@ -96,16 +164,16 @@ export default function Confirmation() {
               </p>
             </div>
             
-            <p style={{ fontSize: "1.1rem", marginBottom: "0.5rem" }}>
+            <p style={{ fontSize: "1rem", marginBottom: "0.5rem" }}>
               <strong>Fecha:</strong> {formatDate(reservationDetails.date)}
             </p>
-            <p style={{ fontSize: "1.1rem", marginBottom: "0.5rem" }}>
+            <p style={{ fontSize: "1rem", marginBottom: "0.5rem" }}>
               <strong>Horario:</strong> {reservationDetails.time}
             </p>
-            <p style={{ fontSize: "1.1rem", marginBottom: "0.5rem" }}>
+            <p style={{ fontSize: "1rem", marginBottom: "0.5rem" }}>
               <strong>Duración:</strong> {reservationDetails.duration} {parseInt(reservationDetails.duration) === 1 ? 'hora' : 'horas'}
             </p>
-            <p style={{ fontSize: "1.1rem" }}>
+            <p style={{ fontSize: "1rem" }}>
               <strong>Ubicación:</strong> {reservationDetails.cubicle} (Piso 4)
             </p>
           </div>
@@ -117,7 +185,7 @@ export default function Confirmation() {
             marginBottom: "2rem",
             border: "1px solid #bfdbfe"
           }}>
-            <p style={{ fontWeight: "500", color: "#1e40af", marginBottom: "0.5rem" }}>
+            <p style={{ fontWeight: "500", color: "var(--ucab-blue)", marginBottom: "0.5rem" }}>
               Instrucciones importantes:
             </p>
             <ul style={{ textAlign: "left", paddingLeft: "1.5rem", color: "#334155" }}>
